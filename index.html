@@ -17,6 +17,7 @@
       <select name="render">
         <option value="basic.js">Pixels</option>
         <option value="circles.js">Circles</option>
+        <option value="circle-svg.js">Circles (svg)</option>
       </select>
     </form>
 
@@ -40,8 +41,6 @@
       });
 
       const data = new FormData(form);
-      // const source = data.get("source");
-      // const render = data.get("render");
 
       const [source, render] = await Promise.all([
         import("./source/" + data.get("source")),
