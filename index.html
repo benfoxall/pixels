@@ -1,0 +1,55 @@
+<html>
+  <head>
+    <title>Pixels</title>
+    <style>
+      body {
+        font-family: sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Pixels</h1>
+    <form>
+      <select name="source">
+        <option value="1x1.js">1 x 1</option>
+        <option value="2x2.js">2 x 2</option>
+      </select>
+      <select name="render">
+        <option value="basic.js">1:1</option>
+      </select>
+    </form>
+
+    <output></output>
+    <script type="module">
+      // persist form
+      const form = document.querySelector("form");
+      for (const [name, value] of new URLSearchParams(location.search)) {
+        for (const el of document.getElementsByName(name)) {
+          for (const option of el.options) {
+            if (option.value === value) {
+              el.value = value;
+            }
+          }
+        }
+      }
+      form.addEventListener("change", (e) => {
+        const data = new FormData(form);
+        const params = new URLSearchParams(data);
+        window.location = `${location.pathname}?${params}`;
+      });
+
+      const data = new FormData(form);
+      // const source = data.get("source");
+      // const render = data.get("render");
+
+      const [source, render] = await Promise.all([
+        import("./source/" + data.get("source")),
+        import("./render/" + data.get("render")),
+      ]);
+
+      const output = document.querySelector("output");
+
+      render.default(source.default, output);
+    </script>
+  </body>
+</html>
